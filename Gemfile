@@ -65,3 +65,11 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem "jwt"
+
+gem 'dotenv', groups: [:development, :test]
+
+gem "bcrypt"
+
+gem 'pg', '~> 1.5', '>= 1.5.6'
