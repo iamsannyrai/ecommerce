@@ -55,6 +55,7 @@ class AuthenticationController < ApplicationController
 
     if user != nil
       if !user.is_verified
+        # TODO check for sent code and compare
         if code == "12345"
           user.is_verified = true
           if user.save
