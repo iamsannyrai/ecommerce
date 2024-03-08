@@ -1,4 +1,7 @@
 class AuthenticationController < ApplicationController
+  include TokenHelper::TokenGeneratorHelper
+  include TokenHelper::TokenVerifierHelper
+
   def signup
     full_name = params[:full_name]
     phone_number = params[:phone_number]
@@ -70,6 +73,27 @@ class AuthenticationController < ApplicationController
     else
       render json: { "message": "User with this phone number doesn't exist" }, status: :not_found
     end
+  end
+
+  def logout
+    authorization = request.authorization
+    if authorization == nil || authorization.empty?
+      render json: { "message": "Token missing" }, status: :forbidden
+    else
+      auth_token = authorization.split(" ")[1]
+      token_id = token_id_if_valid(auth_token)
+      if token_id == nil
+        render json: { "message": "Invalid token" }, status: :forbidden
+      end
+      already_blacklisted = TokenBlacklist.find_by(token_id: token_id) != nil
+      if already_blacklisted
+        render json: { "message": "Token expired" }, status: :forbidden
+      else
+        TokenBlacklist.new(token_id: token_id).save
+        render json: { "message": "Logout successfully!" }, status: :ok
+      end
+    end
+
   end
 
 end

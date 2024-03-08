@@ -11,4 +11,5 @@ Rails.application.routes.draw do
   post "signup" => "authentication#signup"
   post "login" => "authentication#login"
   post "verify" => "authentication#verify_phone_number"
+  delete "logout" => "authentication#logout"
 end
